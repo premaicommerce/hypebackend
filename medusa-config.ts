@@ -1,5 +1,4 @@
 const { loadEnv, defineConfig } = require("@medusajs/framework/utils")
-
 loadEnv(process.env.NODE_ENV || "development", process.cwd())
 
 module.exports = defineConfig({
@@ -13,9 +12,6 @@ module.exports = defineConfig({
         jwtSecret: process.env.JWT_SECRET,
         cookieSecret: process.env.COOKIE_SECRET,
     },
-    admin: {
-        disable: false
-    },
     modules: [
         {
             resolve: "@medusajs/medusa/file",
@@ -26,10 +22,10 @@ module.exports = defineConfig({
                         id: "s3",
                         options: {
                             file_url: process.env.S3_FILE_URL,
-                            access_key_id: process.env.S3_ACCESS_KEY_ID || "minioadmin",
-                            secret_access_key: process.env.S3_SECRET_ACCESS_KEY || "minioadmin",
-                            region: "us-east-1",
-                            bucket: "mygodphotos", // Matches your screenshot
+                            access_key_id: process.env.S3_ACCESS_KEY_ID,
+                            secret_access_key: process.env.S3_SECRET_ACCESS_KEY,
+                            region: process.env.S3_REGION,
+                            bucket: process.env.S3_BUCKET,
                             endpoint: process.env.S3_ENDPOINT,
                             additional_client_config: {
                                 forcePathStyle: true,
