@@ -26,10 +26,10 @@ module.exports = defineConfig({
                         id: "s3",
                         options: {
                             file_url: process.env.S3_FILE_URL,
-                            access_key_id: process.env.S3_ACCESS_KEY_ID,
-                            secret_access_key: process.env.S3_SECRET_ACCESS_KEY,
+                            access_key_id: process.env.S3_ACCESS_KEY_ID || "minioadmin",
+                            secret_access_key: process.env.S3_SECRET_ACCESS_KEY || "minioadmin",
                             region: "us-east-1",
-                            bucket: process.env.S3_BUCKET,
+                            bucket: "mygodphotos", // Matches your screenshot
                             endpoint: process.env.S3_ENDPOINT,
                             additional_client_config: {
                                 forcePathStyle: true,
