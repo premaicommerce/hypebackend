@@ -1,7 +1,6 @@
-// medusa-config.cjs
-const { loadEnv, defineConfig } = require("@medusajs/framework/utils");
+const { loadEnv, defineConfig } = require("@medusajs/framework/utils")
 
-loadEnv(process.env.NODE_ENV || "development", process.cwd());
+loadEnv(process.env.NODE_ENV || "development", process.cwd())
 
 module.exports = defineConfig({
     projectConfig: {
@@ -14,7 +13,9 @@ module.exports = defineConfig({
         jwtSecret: process.env.JWT_SECRET,
         cookieSecret: process.env.COOKIE_SECRET,
     },
-    admin: { disable: false },
+    admin: {
+        disable: false
+    },
     modules: [
         {
             resolve: "@medusajs/medusa/file",
@@ -39,4 +40,4 @@ module.exports = defineConfig({
             },
         },
     ],
-});
+})
