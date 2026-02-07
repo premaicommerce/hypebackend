@@ -1,0 +1,81 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: medusa
+      POSTGRES_PASSWORD: medusa
+      POSTGRES_DB: medusa
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U medusa"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - ./data/redis:/data
+
+  minio:
+    image: minio/minio
+    ports:
+      - "9001:9001" # Console Dashboard
+    #  - "9000:9000" # API Access
+    command: server /data --console-address :9001
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - ./data/minio:/data
+
+  backend:
+    image: node:20
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+      - ./.env:/app/.env         # <--- ADD THIS LINE (Maps the .env file)
+
+    env_file: ../../.env
+    command: sh -c "npm install --legacy-peer-deps && npx medusa build && npx medusa db:migrate && cp .env .medusa/server/.env && cd .medusa/server && npx medusa start"
+    ports:
+      - "9000:9000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      minio:
+        condition: service_started
+
+  frontend:
+      image: node:20
+      working_dir: /app
+      volumes:
+        - ./frontend:/app
+      env_file: ../../.env
+      environment:
+        - NEXT_PUBLIC_MEDUSA_BACKEND_URL=https://vividlook.co.uk
+        - MEDUSA_BACKEND_URL=http://backend:9000
+      command: sh -c "npm install && npm run build && npm run start"
+      depends_on:
+        - backend
+
+  caddy:
+    image: caddy:2
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - backend
+      - frontend
+    restart: unless-stopped
+
+volumes:
+    caddy_data:
+    caddy_config:
