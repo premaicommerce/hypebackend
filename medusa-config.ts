@@ -1,6 +1,9 @@
-const { defineConfig } = require("@medusajs/medusa")
+import { loadEnv, defineConfig } from "@medusajs/framework/utils"
 
-module.exports = defineConfig({
+// Load environment variables
+loadEnv(process.env.NODE_ENV || "development", process.cwd())
+
+export default defineConfig({
     projectConfig: {
         databaseUrl: process.env.DATABASE_URL,
         http: {
@@ -11,8 +14,10 @@ module.exports = defineConfig({
         jwtSecret: process.env.JWT_SECRET,
         cookieSecret: process.env.COOKIE_SECRET,
     },
-    admin: { disable: false },
-     modules: [
+    admin: {
+        disable: false
+    },
+    modules: [
         {
             resolve: "@medusajs/medusa/file",
             options: {
@@ -24,11 +29,11 @@ module.exports = defineConfig({
                             file_url: process.env.S3_FILE_URL,
                             access_key_id: process.env.S3_ACCESS_KEY_ID,
                             secret_access_key: process.env.S3_SECRET_ACCESS_KEY,
-                            region: "us-east-1",
+                            region: "us-east-1", // MinIO default
                             bucket: process.env.S3_BUCKET,
                             endpoint: process.env.S3_ENDPOINT,
                             additional_client_config: {
-                                forcePathStyle: true, // This is the secret sauce for MinIO
+                                forcePathStyle: true, // Required for MinIO
                             },
                         },
                     },
