@@ -1,0 +1,11 @@
+vividlook.co.uk {
+    reverse_proxy frontend:3000
+}
+
+admin.vividlook.co.uk {
+    reverse_proxy backend:9000
+}
+
+api.vividlook.co.uk {
+    reverse_proxy backend:9000
+}
