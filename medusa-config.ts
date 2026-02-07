@@ -1,9 +1,8 @@
 import { loadEnv, defineConfig } from "@medusajs/framework/utils"
 
-// Load environment variables
 loadEnv(process.env.NODE_ENV || "development", process.cwd())
 
-export default defineConfig({
+const medusaConfig = defineConfig({
     projectConfig: {
         databaseUrl: process.env.DATABASE_URL,
         http: {
@@ -29,11 +28,11 @@ export default defineConfig({
                             file_url: process.env.S3_FILE_URL,
                             access_key_id: process.env.S3_ACCESS_KEY_ID,
                             secret_access_key: process.env.S3_SECRET_ACCESS_KEY,
-                            region: "us-east-1", // MinIO default
+                            region: "us-east-1",
                             bucket: process.env.S3_BUCKET,
                             endpoint: process.env.S3_ENDPOINT,
                             additional_client_config: {
-                                forcePathStyle: true, // Required for MinIO
+                                forcePathStyle: true,
                             },
                         },
                     },
@@ -42,3 +41,6 @@ export default defineConfig({
         },
     ],
 })
+
+// DO NOT USE 'export default' - Use module.exports
+module.exports = medusaConfig
